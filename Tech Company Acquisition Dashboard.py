@@ -5,12 +5,17 @@
 
 
 import plotly
-plotly.tools.set_credentials_file(username = 'gqgg', api_key = 'Jj0cizKNthtkBLZAvBrP')
+plotly.tools.set_credentials_file(username = 'qqgg', api_key = 'bEyB7z474ofUodX8pQPo')
 
+from plotly import __version__
+from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 import plotly.dashboard_objs as dashboard
 import plotly.plotly as py
 import plotly.graph_objs as go
 import cufflinks as cf
+
+
+init_notebook_mode(connected=True)
 
 import IPython.display
 from IPython.display import Image
@@ -32,9 +37,7 @@ raw = pd.read_csv("/Users/qinqingao/Desktop/Columbia/Courses/Fall 2018/APAN 5500
 # In[3]:
 
 
-
-import plotly.plotly as py
-import plotly.graph_objs as go
+# create bar chart: Count of acquisitions made by Top 7 Tech Companies
 
 cnt_PC = pd.DataFrame({'PComp': raw.ParentCompany.value_counts()})
 cnt_PC = cnt_PC.sort_values(by = 'PComp', ascending = False)
@@ -43,8 +46,12 @@ data  = go.Data([
                 go.Bar(
                 x = cnt_PC.index,
                 y = cnt_PC.PComp,
-                text = cnt_PC.PComp,
-                textposition = 'outside',
+#                 text = cnt_PC.PComp,
+# #                 font = dict(
+# #                 color = "black",
+# #                 size = 12
+# #                 ),
+#                 textposition = 'outside',
                 marker = dict(
                         color = 'orange',
                         line = dict(
@@ -55,12 +62,22 @@ data  = go.Data([
         )])
 
 layout = go.Layout(
-    width = 800,
-    height = 500,
-    title = "<b>Acquisitions by Top 7 Tech Companies</b>",
+    autosize = False,
+    width = 400,
+    height = 250,
+    margin = dict(
+    l = 40,
+    r = 10,
+    b = 40,
+    t = 10),
+#     title = '<b>Number of Acquisitions</b>',
+#     xaxis = go.layout.XAxis(
+#     title = 'Top 7 Tech Companies'
+#     ),
     yaxis = go.layout.YAxis(
     title = 'Count'
-    ))
+    )
+    )
 
 fig  = go.Figure(data = data, layout = layout)
 url_1 = py.plot(fig, filename = 'bar-plot-cnt-PComp', auto_open = False)
@@ -75,7 +92,7 @@ py.iplot(fig, filename = 'bar-plot-cnt-PComp')
 # In[4]:
 
 
-# # create horizontal chart: Amount of Value (USD) acquired by Top 7 Tech Companies
+# # create horizontal bar chart: Amount of Value (USD) acquired by Top 7 Tech Companies
 
 # amt_PC = pd.DataFrame(raw.groupby(['ParentCompany'])['Value (USD)'].sum())
 # amt_PC = amt_PC.sort_values(by = 'Value (USD)', ascending = True)
@@ -113,25 +130,36 @@ py.iplot(fig, filename = 'bar-plot-cnt-PComp')
 # In[5]:
 
 
+# create donut chart: Amount of Value (USD) acquired by Top 7 Tech Companies
+
 amt_PC = pd.DataFrame(raw.groupby(['ParentCompany'])['Value (USD)'].sum())
 amt_PC = amt_PC.sort_values(by = 'Value (USD)', ascending = True)
 
 fig = {
   "data": [
     {
-      "values": amt_PC['Value (USD)'],
+      "values": round(amt_PC['Value (USD)']/1000000000, 2),
       "labels": amt_PC.index,
       "domain": {"x": [0, 1]},
-      "hoverinfo":"label",
+      "hoverinfo": "label + value",
       "hole": .4,
       "type": "pie"
     }],
+    
   "layout": {
-        "title":"<b>Amount of Acquisition (USD) by Top 7 Tech Companies</b>",
+#         "title":"<b>Value of Acquisition (US$B)</b>",
+#         "autosize": False,
+        "width": 300,
+        "height": 300,
+        "margin": {
+        "l": 10,
+        "r": 10,
+        "b": 10,
+        "t": 10},
         "annotations": [
             {
                 "font": {
-                    "size": 20
+                    "size": 12
                 },
                 "showarrow": False,
                 "text": "Top 7",
@@ -150,21 +178,59 @@ py.iplot(fig, filename = 'donut')
 # In[6]:
 
 
-x0 = np.random.randn(50)
-x1 = np.random.randn(50) + 2
-x2 = np.random.randn(50) + 4
-x3 = np.random.randn(50) + 6
+# create world map
 
-colors = ['#FAEE1C', '#F3558E', '#9C1DE7', '#581B98']
+# csl = [[1,"rgb(5, 10, 172)"],[0.75,"rgb(40, 60, 190)"],[0.5,"rgb(70, 100, 245)"],\
+#        [0.25,"rgb(90, 120, 245)"],[0.15,"rgb(106, 137, 247)"],[0,"rgb(220, 220, 220)"]]
 
-trace0 = go.Box(x=x0, marker={'color': colors[0]})
-trace1 = go.Box(x=x1, marker={'color': colors[1]})
-trace2 = go.Box(x=x2, marker={'color': colors[2]})
-trace3 = go.Box(x=x3, marker={'color': colors[3]})
-data = [trace0, trace1, trace2, trace3]
+csl = [[0, 'rgb(255, 255, 255)'], [0.0005, 'rgb(255, 243, 234)'], [0.001, 'rgb(255, 230, 208)'], [0.01, 'rgb(255, 175, 106)'], [0.05, 'rgb(255, 161, 81)'], [0.25, 'rgb(255, 134, 30)'], [1, 'rgb(255, 118, 0)']]
 
-url_3 = py.plot(data, filename='box-plots-for-dashboard_2', auto_open=False)
-py.iplot(data, filename='box-plots-for-dashboard_2')
+
+data = [dict(
+        type = 'choropleth',
+        locations = raw['Country'],
+        z = raw['Value (USD)'],
+#         text = raw['Country'],
+        colorscale = csl,
+#         colorscale = 'Rainbow',
+        autocolorscale = False,
+        showscale = False,
+        marker = dict(
+                line = dict (
+                color = 'rgb(180,180,180)',
+                width = 1
+            )),
+#         tick0 = 0,
+        zmin = 0,
+#         dtick = 1000,
+        colorbar = dict(
+            title = 'US$ B'
+        )
+        )
+       ]
+
+layout = dict(
+#     title = '<b>Worldwide Acquisition Value</b>',
+    width = 800,
+    height = 450,
+    margin = dict(
+    l = 10,
+    r = 10,
+    b = 10,
+    t = 10),
+    geo = dict(
+        showframe = False,
+        showcoastlines = True,
+        projection = dict(
+        type = 'equirectangular'
+        )
+    )
+)
+
+fig = dict(data = data, layout = layout)
+
+url_3 = py.plot(fig, filename='world-map', auto_open=False)
+py.iplot(fig, filename='world-map')
 
 
 # In[7]:
@@ -190,7 +256,6 @@ py.iplot(data, filename='box-plots-for-dashboard_3')
 # In[8]:
 
 
-
 import re
 
 def fileId_from_url(url):
@@ -211,20 +276,25 @@ fileId_4 = fileId_from_url(url_4)
 
 
 text_for_box = """ 
-#### Background 
 This is a dashboard showing company acquisition data for the top 7 tech companies: 
 [Google](https://abc.xyz/investor/), [Microsoft](https://www.microsoft.com/en-us/investor), [Facebook](https://investor.fb.com/home/default.aspx), [Apple](https://investor.apple.com/investor-relations/default.aspx), [Yahoo](https://finance.yahoo.com/), [Twitter](https://investor.twitterinc.com/investor-relations), [IBM](https://www.ibm.com/investor/)
 
 
-#### Viz 1
+###### Geo map
 1. Showing ...
 2. Explanation ...
 
-
-#### Viz 2
+###### Bar chart
 1. Showing ...
 2. Explanation ...
 
+###### Donut chart
+1. Showing ...
+2. Explanation ...
+
+###### Viz 4
+1. Showing ...
+2. Explanation ...
 
 More information about the data can be found [here](https://www.kaggle.com/shivamb/company-acquisitions-7-top-companies).
 """
@@ -233,37 +303,37 @@ More information about the data can be found [here](https://www.kaggle.com/shiva
 box_a = {
     'type': 'box',
     'boxType': 'plot',
-    'fileId': fileId_1,
-    'title': ''
+    'fileId': fileId_3,
+    'title': 'Worldwide Acquisition Value'
 }
 
 box_b = {
     'type': 'box',
-    'boxType': 'text',
-    'text': text_for_box,
-    'title': 'Background & Notes'
+    'boxType': 'plot',
+    'fileId': fileId_2,
+    'title': 'Value of Acquisition (US$ B)'
 }
 
 
 box_c = {
     'type': 'box',
     'boxType': 'plot',
-    'fileId': fileId_2,
-    'title': ''
+    'fileId': fileId_1,
+    'title': 'Number of Acquisitions'
 }
 
 box_d = {
     'type': 'box',
     'boxType': 'plot',
-    'fileId': fileId_3,
+    'fileId': fileId_4,
     'title': ''
 }
 
 box_e = {
     'type': 'box',
-    'boxType': 'plot',
-    'fileId': fileId_4,
-    'title': ''
+    'boxType': 'text',
+    'text': text_for_box,
+    'title': 'Background & Notes'
 }
 
 
@@ -337,6 +407,8 @@ for _ in range(5):
 
 
 stacked_dboard['layout']['size'] = 2400
+# stacked_dboard['layout']['height'] = 500
+# stacked_dboard['layout']['width'] = 1000
 
 
 # In[15]:
