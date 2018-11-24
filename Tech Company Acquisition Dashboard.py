@@ -5,7 +5,7 @@
 
 
 import plotly
-plotly.tools.set_credentials_file(username = 'qqgg', api_key = 'bEyB7z474ofUodX8pQPo')
+plotly.tools.set_credentials_file(username = 'ginqg', api_key = 'IUSKOxkOgaDiEJMNeV0c')
 
 from plotly import __version__
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
@@ -82,11 +82,6 @@ layout = go.Layout(
 fig  = go.Figure(data = data, layout = layout)
 url_1 = py.plot(fig, filename = 'bar-plot-cnt-PComp', auto_open = False)
 py.iplot(fig, filename = 'bar-plot-cnt-PComp')
-
-
-# cnt_PC = raw.ParentCompany.value_counts()
-# cnt_PC.iplot(kind='bar', yTitle='Count', title='Acquisitions by Top 7 Tech Companies',
-#              filename='bar-plot-cnt-PComp_2')
 
 
 # In[4]:
@@ -236,21 +231,79 @@ py.iplot(fig, filename='world-map')
 # In[7]:
 
 
-x0 = np.random.randn(50)
-x1 = np.random.randn(50) + 2
-x2 = np.random.randn(50) + 4
-x3 = np.random.randn(50) + 6
+from wordcloud import WordCloud, STOPWORDS
 
-colors = ['#FAEE1C', '#F3558E', '#9C1DE7', '#581B98']
+def plotly_wordcloud(text):
+    wc = WordCloud(stopwords = set(STOPWORDS),
+                   max_words = 200,
+                   max_font_size = 100)
+    wc.generate(text)
+    
+    word_list=[]
+    freq_list=[]
+    fontsize_list=[]
+    position_list=[]
+    orientation_list=[]
+    color_list=[]
 
-trace0 = go.Box(x=x0, marker={'color': colors[0]})
-trace1 = go.Box(x=x1, marker={'color': colors[1]})
-trace2 = go.Box(x=x2, marker={'color': colors[2]})
-trace3 = go.Box(x=x3, marker={'color': colors[3]})
-data = [trace0, trace1, trace2, trace3]
+    for (word, freq), fontsize, position, orientation, color in wc.layout_:
+        word_list.append(word)
+        freq_list.append(freq)
+        fontsize_list.append(fontsize)
+        position_list.append(position)
+        orientation_list.append(orientation)
+        color_list.append(color)
+        
+    # get the positions
+    x=[]
+    y=[]
+    for i in position_list:
+        x.append(i[0])
+        y.append(i[1])
+            
+    # get the relative occurence frequencies
+    new_freq_list = []
+    for i in freq_list:
+        new_freq_list.append(i*100)
+    new_freq_list
+    
+    trace = go.Scatter(x=x, 
+                       y=y, 
+                       textfont = dict(size=new_freq_list,
+                                       color=color_list),
+                       hoverinfo='text',
+                       hovertext=['{0}{1}'.format(w, f) for w, f in zip(word_list, freq_list)],
+                       mode="text",  
+                       text=word_list
+                      )
+    
+    layout = go.Layout(
+                       xaxis=dict(showgrid=False, 
+                                  showticklabels=False,
+                                  zeroline=False,
+                                  automargin=True),
+                       yaxis=dict(showgrid=False,
+                                  showticklabels=False,
+                                  zeroline=False,
+                                  automargin=True),
+#                        autosize = True,
+                       width = 600,
+                       height = 400,
+                       margin = dict(
+                        l = 5,
+                        r = 5,
+                        b = 5,
+                        t = 5)
+                              )
+    
+    fig = go.Figure(data=[trace], layout=layout)
+    
+    return fig
 
-url_4 = py.plot(data, filename='box-plots-for-dashboard_3', auto_open=False)
-py.iplot(data, filename='box-plots-for-dashboard_3')
+text = raw.Business
+
+url_4 = py.plot(plotly_wordcloud(str(text)), filename='word-cloud', auto_open=False)
+py.iplot(plotly_wordcloud(str(text)), filename='word-cloud')
 
 
 # In[8]:
@@ -326,7 +379,7 @@ box_d = {
     'type': 'box',
     'boxType': 'plot',
     'fileId': fileId_4,
-    'title': ''
+    'title': 'Type of Businesses Acquired'
 }
 
 box_e = {
