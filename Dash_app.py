@@ -28,8 +28,8 @@ app.css.append_css({'external_url': 'https://cdn.rawgit.com/plotly/dash-app-styl
 layout = dict(
     # autosize=True,
     # height=800,
-    font=dict(color="#191A1A"),
-    titlefont=dict(color="#191A1A", size='14'),
+    font=dict(color="#191A1A", family='Arial, sans-serif'),
+    titlefont=dict(color="#191A1A", size='14', family='Arial, sans-serif'),
     margin=dict(
         l=5,
         r=5,
@@ -38,7 +38,7 @@ layout = dict(
     ),
     hovermode="closest",
     legend=dict(font=dict(size=10), orientation='h'),
-    title='Acquisition by Top 7 Tech Companies',
+    title='<b>Acquisition by Top 7 Tech Companies</b>',
     mapbox=dict(
         accesstoken=mapbox_access_token,
         style="light",
@@ -46,67 +46,11 @@ layout = dict(
 )
 
 
-# Controls (dropdowns)
-group = ['All']
-group = group + ['Low', 'Medium', 'High', 'Very High']
-group_class = [{'label': str(item),
-                'value': str(item)}
-                for item in group]
-
-
-
 # Creating layouts for datatable
 layout_right = copy.deepcopy(layout)
-layout_right['height'] = 300
+layout_right['height'] = 200
 # layout_right['margin-top'] = '10'
 layout_right['font-size'] = '12'
-
-mp_max = raw['Value (USD)'].max()
-mp_min = raw['Value (USD)'].min()
-
-
-# Components style
-def color_scale(md, selected_row_indices=[]):
-    color = []
-    max_score = mp_max
-    min_score = mp_min
-    for row in md['Value (USD)']:
-        scale = (row - mp_min)/(mp_max - mp_min)
-        if scale <= 0.06:
-            color.append("#26EC04")
-        elif scale <= 0.12:
-            color.append("#8FDB44")
-        elif scale <= 0.18:
-            color.append("#A5D643")
-        elif scale <= 0.24:
-            color.append("#B8D343")
-        elif scale <= 0.30:
-            color.append("#B8D343")
-        elif scale <= 0.36:
-            color.append("#DBCD44")
-        elif scale <= 0.42:
-            color.append("#E1CD44")
-        elif scale <= 0.48:
-            color.append("#F0CB45")
-        elif scale <= 0.54:
-            color.append("#F3C644")
-        elif scale <= 0.60:
-            color.append("#F2BE41")
-        elif scale <= 0.66:
-            color.append("#F0AE3D")
-        elif scale <= 0.72:
-            color.append("#EFA73B")
-        elif scale <= 0.78:
-            color.append("#EE9F39")
-        elif scale <= 0.84:
-            color.append("#ED8934")
-        elif scale <= 0.90:
-            color.append("#E95729")
-        else:
-            color.append("#FD0101")
-    for i in selected_row_indices:
-        color[i] = '#1500FA'
-    return color
 
 
 def gen_map(raw):
@@ -166,11 +110,14 @@ app.layout = html.Div([
         [
             html.H2(
                 'Acquisition by Top 7 Tech Companies',
-                style={'font-family': 'Helvetica',
-                       "margin-top": "15",
+                style={'font-family': 'Arial, sans-serif',
+                       "margin-top": "14",
                        "margin-bottom": "0"},
-                className='Eight columns',
+                className='twelve columns',
             ),
+            dcc.Link('Website', href='https://ginnyqg.github.io', style = {'float': 'right'}),
+            html.P('\u00A0\u00A0\u00A0', style = {'float': 'right'}),
+            dcc.Link('Code', href='https://github.com/ginnyqg/dashboard', style = {'float': 'right'}),
             # html.Img(
             #     src="http://static1.squarespace.com/static/546fb494e4b08c59a7102fbc/t/591e105a6a496334b96b8e47/1497495757314/.png",
             #     className='two columns',
@@ -185,9 +132,10 @@ app.layout = html.Div([
             # ),
             html.P(
                 'Geo View for Acquired Companies',
-                style={'font-family': 'Helvetica',
+                style={'font-family': 'Arial, sans-serif',
                        "font-size": "120%",
-                       "width": "80%"},
+                       "width": "80%"
+                       },
                 className='six columns',
             ),
         ],
@@ -252,7 +200,7 @@ app.layout = html.Div([
                         selected_row_indices=[],
                         id='datatable'),
                 ],
-                # style=layout_right,
+                style=layout_right,
                 className="twelve columns"
             )], className='ten columns offset-by-one')
 
@@ -329,6 +277,7 @@ def update_figure(rows, selected_row_indices):
         b = 50,
         t = 50),
         title = '<b>Number of Acquisitions</b>',
+        font=dict(color="#191A1A", family='Arial, sans-serif'),
     #     xaxis = go.layout.XAxis(
     #     title = 'Top 7 Tech Companies'
     #     ),
