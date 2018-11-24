@@ -118,18 +118,6 @@ app.layout = html.Div([
             dcc.Link('Website', href='https://ginnyqg.github.io', style = {'float': 'right'}),
             html.P('\u00A0\u00A0\u00A0', style = {'float': 'right'}),
             dcc.Link('Code', href='https://github.com/ginnyqg/dashboard', style = {'float': 'right'}),
-            # html.Img(
-            #     src="http://static1.squarespace.com/static/546fb494e4b08c59a7102fbc/t/591e105a6a496334b96b8e47/1497495757314/.png",
-            #     className='two columns',
-            #     style={
-            #         'height': '9%',
-            #         'width': '9%',
-            #         'float': 'right',
-            #         'position': 'relative',
-            #         'padding-top': 10,
-            #         'padding-right': 0
-            #     },
-            # ),
             html.P(
                 'Geo View for Acquired Companies',
                 style={'font-family': 'Arial, sans-serif',
@@ -170,7 +158,7 @@ app.layout = html.Div([
         className='row'
     ),
 
-    # Map + table + Histogram
+    # Map, barchart, donut chart, word cloud, text, table
     html.Div(
         [
             html.Div(
@@ -184,25 +172,51 @@ app.layout = html.Div([
 
             html.Div(
                 [
-                    dcc.Graph(id="bar-chart")],
-                    className="six columns")
-            ], className="row"
+                    dcc.Graph(id="bar-chart"
+                        )
+                ], className="six columns")
+            ],
+            className="row"
             ),
 
+    html.Div(
+        [
             html.Div(
                 [
-                    dt.DataTable(
-                        rows=raw.to_dict('records'),
-                        columns=raw.columns,
-                        row_selectable=True,
-                        filterable=True,
-                        sortable=True,
-                        selected_row_indices=[],
-                        id='datatable'),
-                ],
-                style=layout_right,
-                className="twelve columns"
-            )], className='ten columns offset-by-one')
+                    dcc.Graph(id='donut-chart',
+                              animate=True, 
+                              style={'margin-top': '0'}
+                              )
+                ], className = "six columns"
+            ),
+
+            # html.Div(
+            #     [
+            #         dcc.Graph(id="word-cloud"
+            #             )
+            #     ], className="six columns")
+            ],
+            className="row"
+            ),
+
+
+    html.Div(
+        [
+            dt.DataTable(
+                rows=raw.to_dict('records'),
+                columns=raw.columns,
+                row_selectable=True,
+                filterable=True,
+                sortable=True,
+                selected_row_indices=[],
+                id='datatable'),
+        ],
+        style=layout_right,
+        className="twelve columns"
+    )
+
+
+], className='ten columns offset-by-one')
 
 
 
@@ -287,6 +301,54 @@ def update_figure(rows, selected_row_indices):
         )
 
     return go.Figure(data = data, layout = layout)
+
+
+
+@app.callback(
+    Output('donut-chart', 'figure'),
+    [Input('datatable', 'rows'),
+     Input('datatable', 'selected_row_indices')])
+def update_figure(rows, selected_row_indices):
+    dff = pd.DataFrame(rows)
+    amt_PC = pd.DataFrame(dff.groupby(['ParentCompany'])['Value (USD)'].sum())
+    amt_PC = amt_PC.sort_values(by = 'Value (USD)', ascending = True)
+
+    return {
+      "data": [
+        {
+          "values": round(amt_PC['Value (USD)']/1000000000, 2),
+          "labels": amt_PC.index,
+          "domain": {"x": [0, 1]},
+          "hoverinfo": "label + value",
+          "hole": .4,
+          "type": "pie"
+        }],
+        
+      "layout": {
+            "title":"<b>Value of Acquisition (US$B)</b>",
+    #         "autosize": False,
+            "width": 300,
+            "height": 300,
+            "margin": {
+            "l": 20,
+            "r": 20,
+            "b": 20,
+            "t": 30},
+            "showlegend": False,
+            "annotations": [
+                {
+                    "font": {
+                        "size": 12
+                    },
+                    "showarrow": False,
+                    "text": "Parent C",
+                    "x": 0.5,
+                    "y": 0.5
+                }
+            ]
+        }
+    }
+
 
 
 
