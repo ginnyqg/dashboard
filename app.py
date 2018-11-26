@@ -111,25 +111,28 @@ app.layout = html.Div([
         # Title - Row
         html.Div(
             [
-                html.H3(
+                html.H4(
                     'Company Acquisitions by 7 Tech Giants',
                     style={"font-family": "Arial, sans-serif",
                            "font-weight": "bold",
                            'margin-top': '5',
                            "margin-bottom": "0"},
-                    className='ten columns',
+                    className='eight columns',
                 ),
                 html.A(html.Button('Code'), href='https://github.com/ginnyqg/dashboard', 
-                    style = {'float': 'right',
-                             'margin-top': '5'}
+                    style = {
+                             'float': 'right',
+                             'margin-top': '5'
+                             }
                              ),
                 # html.P('\u00A0\u00A0\u00A0', 
                 #     style = {'float': 'right',
                 #              'margin-top': '5'}),
                 html.A(html.Button('Data'), href='https://www.kaggle.com/shivamb/company-acquisitions-7-top-companies', 
-                    style = {'float': 'right',
-                            'margin-top': '5'}),
-                html.H4(
+                    style = {
+                             'float': 'right',
+                             'margin-top': '5'}),
+                html.H5(
                     'between 1987 and 2018',
                     style={'font-family': 'Arial, sans-serif',
                            "font-size": "120%",
