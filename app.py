@@ -6,6 +6,7 @@ import dash_table_experiments as dt
 import plotly
 from plotly import graph_objs as go
 from plotly.graph_objs import *
+import matplotlib
 from wordcloud import WordCloud, STOPWORDS
 from flask import Flask
 import pandas as pd
@@ -19,7 +20,8 @@ server = app.server
 
 
 mapbox_access_token = "pk.eyJ1IjoiZ2lubnlxZyIsImEiOiJjam9zcnlsemwwZHZrM3JvOTZudm5uY2E3In0.LhMpmoHGbUjWc6wmypE9cg" #fill this field with your Mapbox key
-raw = pd.read_csv('/Users/qinqingao/Desktop/Columbia/Courses/Fall 2018/APAN 5500 Viz/HW/A4/acquisitions.csv')
+
+raw = pd.read_csv('https://raw.githubusercontent.com/ginnyqg/dashboard/master/acquisitions.csv')
 
 
 
@@ -30,7 +32,7 @@ layout = dict(
     # autosize=True,
     # height=800,
     font=dict(color="#191A1A", family='Arial, sans-serif'),
-    titlefont=dict(color="#191A1A", size='14', family='Arial, sans-serif'),
+    titlefont=dict(color="#191A1A", size='12', family='Arial, sans-serif'),
     margin=dict(
         l=5,
         r=5,
@@ -39,7 +41,7 @@ layout = dict(
     ),
     hovermode="closest",
     legend=dict(font=dict(size=10), orientation='h'),
-    title='<b>Acquisition by Top 7 Tech Companies</b>',
+    # title='<b>Acquisition by Top 7 Tech Companies</b>',
     mapbox=dict(
         accesstoken=mapbox_access_token,
         style="light",
@@ -84,14 +86,14 @@ def gen_map(raw):
         }
             ],
         "layout": {
-            "title": '<b>Geo View of Acquired Companies by Parent Companies</b>',
-            "width": 600,
+            "title": '<b>Geo View of Acquired Companies by Parent Company</b>',
+            "width": 550,
             "height": 350,
             "margin": {
-            "l": 0,
-            "r": 0,
-            "b": 20,
-            "t": 30},
+            "l": 20,
+            "r": 20,
+            "b": 50,
+            "t": 50},
             "geo": {
                 "showframe": False,
                 "showcoastlines": True,
@@ -106,132 +108,145 @@ def gen_map(raw):
 
 # Layout
 app.layout = html.Div([
-    # Title - Row
-    html.Div(
-        [
-            html.H2(
-                'Company Acquisitions by 7 Tech Giants',
-                style={"font-family": "Arial, sans-serif",
-                       "font-weight": "bold",
-                       'margin-top': '5',
-                       "margin-bottom": "0"},
-                className='ten columns',
-            ),
-            dcc.Link('Code', href='https://github.com/ginnyqg/dashboard', 
-                style = {'float': 'right',
-                         'margin-top': '5'}),
-            html.P('\u00A0\u00A0\u00A0', 
-                style = {'float': 'right',
-                         'margin-top': '5'}),
-            dcc.Link('Data', href='https://www.kaggle.com/shivamb/company-acquisitions-7-top-companies', 
-                style = {'float': 'right',
-                        'margin-top': '5'}),
-            html.H4(
-                'between 1987 and 2018',
-                style={'font-family': 'Arial, sans-serif',
-                       "font-size": "120%",
-                       "width": "80%",
-                       "float": "left"
-                       },
-                className='ten columns',
-            ),
-        ],
-        className='row'
-    ),
+        # Title - Row
+        html.Div(
+            [
+                html.H3(
+                    'Company Acquisitions by 7 Tech Giants',
+                    style={"font-family": "Arial, sans-serif",
+                           "font-weight": "bold",
+                           'margin-top': '5',
+                           "margin-bottom": "0"},
+                    className='ten columns',
+                ),
+                dcc.Link('Code', href='https://github.com/ginnyqg/dashboard', 
+                    style = {'float': 'right',
+                             'margin-top': '5'}),
+                html.P('\u00A0\u00A0\u00A0', 
+                    style = {'float': 'right',
+                             'margin-top': '5'}),
+                dcc.Link('Data', href='https://www.kaggle.com/shivamb/company-acquisitions-7-top-companies', 
+                    style = {'float': 'right',
+                            'margin-top': '5'}),
+                html.H4(
+                    'between 1987 and 2018',
+                    style={'font-family': 'Arial, sans-serif',
+                           "font-size": "120%",
+                           "width": "80%",
+                           "float": "left"
+                           },
+                    className='ten columns',
+                ),
+            ],
+            className='row'
+        ),
 
-    # Selectors
-    html.Div(
-        [
-            html.Div(
-                [
-                    # html.P('Geo View of Acquired Companies by Parent Companies',
-                    #         style={'font-family': 'Arial, sans-serif',
-                    #                'font-weight': 'bold'}),
-                    dcc.Checklist(
-                            id = 'PComp',
-                            options=[
-                                {'label': 'Google', 'value': 'Google'},
-                                {'label': 'Microsoft', 'value': 'Microsoft'},
-                                {'label': 'Facebook', 'value': 'Facebook'},
-                                {'label': 'Apple', 'value': 'Apple'},
-                                {'label': 'Twitter', 'value': 'Twitter'},
-                                {'label': 'IBM', 'value': 'IBM'},
-                                {'label': 'Yahoo', 'value': 'Yahoo'}
-                            ],
-                            values=['Google', 'Microsoft', 'Facebook', 'Apple', 'Twitter', 'IBM', 'Yahoo'],
-                            labelStyle={'display': 'inline-block'}
-                    ),
+        # Selectors
+        html.Div(
+            [
+                html.Div(
+                    [
+                        # html.P('Geo View of Acquired Companies by Parent Companies',
+                        #         style={'font-family': 'Arial, sans-serif',
+                        #                'font-weight': 'bold'}),
+                        dcc.Checklist(
+                                id = 'PComp',
+                                options=[
+                                    {'label': 'Google', 'value': 'Google'},
+                                    {'label': 'Microsoft', 'value': 'Microsoft'},
+                                    {'label': 'Facebook', 'value': 'Facebook'},
+                                    {'label': 'Apple', 'value': 'Apple'},
+                                    {'label': 'Twitter', 'value': 'Twitter'},
+                                    {'label': 'IBM', 'value': 'IBM'},
+                                    {'label': 'Yahoo', 'value': 'Yahoo'}
+                                ],
+                                values=['Google', 'Microsoft', 'Facebook', 'Apple', 'Twitter', 'IBM', 'Yahoo'],
+                                labelStyle={'display': 'inline-block'}
+                        ),
+                    ],
+                    className='twelve columns',
+                    style={
+                    # 'margin-top': '10',
+                           'margin-bottom': '10'}
+                ),
+            ],
+            className='row'
+        ),
+
+        # Map, barchart, donut chart, word cloud, text, table
+        html.Div(
+            [
+                html.Div(
+                    [
+                        dcc.Graph(id='map-graph',
+                                  animate=True, 
+                                  style={'margin-top': '0'}
+                                  )
+                    ], className = "seven columns"
+                ),
+
+                html.Div(
+                    [
+                        dcc.Graph(id="bar-chart"
+                            )
+                    ], className="five columns")
                 ],
-                className='six columns',
-                style={
-                # 'margin-top': '10',
-                       'margin-bottom': '10'}
-            ),
-        ],
-        className='row'
-    ),
+                className="row"
+                ),
 
-    # Map, barchart, donut chart, word cloud, text, table
-    html.Div(
-        [
-            html.Div(
-                [
-                    dcc.Graph(id='map-graph',
-                              animate=True, 
-                              style={'margin-top': '0'}
-                              )
-                ], className = "six columns"
-            ),
+        html.Div(
+            [
+                html.Div(
+                    [
+                        dcc.Graph(id='donut-chart',
+                                  animate=True, 
+                                  style={'margin-top': '0'}
+                                  )
+                    ], className = "six columns"
+                ),
 
-            html.Div(
-                [
-                    dcc.Graph(id="bar-chart"
-                        )
-                ], className="six columns")
-            ],
-            className="row"
-            ),
-
-    html.Div(
-        [
-            html.Div(
-                [
-                    dcc.Graph(id='donut-chart',
-                              animate=True, 
-                              style={'margin-top': '0'}
-                              )
-                ], className = "six columns"
-            ),
-
-            html.Div(
-                [
-                    dcc.Graph(id="word-cloud"
-                        )
-                ], className="six columns")
-            ],
-            className="row"
-            ),
+                html.Div(
+                    [
+                        dcc.Graph(id="word-cloud"
+                            )
+                    ], className="six columns")
+                ],
+                className="row"
+                ),
 
 
-    html.Div(
-        [
-            dt.DataTable(
-                rows=raw.to_dict('records'),
-                columns=raw.columns,
-                row_selectable=True,
-                filterable=True,
-                sortable=True,
-                selected_row_indices=[],
-                id='datatable'),
-        ],
-        style=layout_right,
-        className="twelve columns"
-    )
+        html.Div(
+            [
+                dt.DataTable(
+                    rows=raw.to_dict('records'),
+                    columns=raw.columns,
+                    row_selectable=True,
+                    filterable=True,
+                    sortable=True,
+                    selected_row_indices=[],
+                    id='datatable'),
+                ],
+                style=layout_right,
+                className="twelve columns"
+                )
+    ]
+    , 
+    className='ten columns offset-by-one')
 
 
-], className='ten columns offset-by-one')
 
+# Callbacks and functions for map-graph
+@app.callback(
+    Output('map-graph', 'figure'),
+    [Input('datatable', 'rows'),
+     Input('datatable', 'selected_row_indices')])
 
+def map_selection(rows, selected_row_indices):
+    aux = pd.DataFrame(rows)
+    temp_df = aux.ix[selected_row_indices, :]
+    if len(selected_row_indices) == 0:
+        return gen_map(aux)
+    return gen_map(temp_df)
 
 
 # Callbacks and functions for datatable
@@ -296,15 +311,16 @@ def update_figure(rows, selected_row_indices):
 
     layout = go.Layout(
         # autosize = False,
-        width = 580,
-        height = 280,
+        width = 420,
+        height = 260,
         margin = dict(
-        l = 100,
-        r = 10,
-        b = 50,
-        t = 50),
-        title = '<b>Number of Acquisitions</b>',
-        font=dict(color="#191A1A", family='Arial, sans-serif'),
+        l = 40,
+        r = 40,
+        b = 20,
+        t = 70),
+        title = '<b>Number of Acquisitions by Parent Company</b>',
+        font=dict(color = "#191A1A", 
+                  family = 'Arial, sans-serif'),
     #     xaxis = go.layout.XAxis(
     #     title = 'Top 7 Tech Companies'
     #     ),
@@ -339,21 +355,22 @@ def update_figure(rows, selected_row_indices):
         }],
         
       "layout": {
-            "title":"<b>Value of Acquisition (US$B)</b>",
-            "font": {"color": "#191A1A", "family": "Arial, sans-serif"},
-    #         "autosize": False,
-            "width": 300,
-            "height": 300,
+            "title":"<b>Value of Acquisition by Parent Company(US$B)</b>",
+            "font": {"color": "#191A1A", 
+                     "family": "Arial, sans-serif"},
+            "align": 'center',
+            "width": 500,
+            "height": 350,
             "margin": {
             "l": 20,
             "r": 20,
-            "b": 20,
-            "t": 30},
+            "b": 30,
+            "t": 50},
             "showlegend": False,
             "annotations": [
                 {
                     "font": {
-                        "size": 14
+                    "size": 14
                     },
                     "showarrow": False,
                     "text": "Parent <br>Company</br>",
@@ -432,11 +449,11 @@ def update_figure(rows, selected_row_indices):
                    title = '<b>Type of Businesses Acquired</b>',
                    font=dict(color="#191A1A", family='Arial, sans-serif'),
                    width = 550,
-                   height = 300,
+                   height = 350,
                    margin = dict(
                     l = 20,
                     r = 20,
-                    b = 20,
+                    b = 30,
                     t = 30)
                           )
 
@@ -444,17 +461,7 @@ def update_figure(rows, selected_row_indices):
 
 
 
-@app.callback(
-    Output('map-graph', 'figure'),
-    [Input('datatable', 'rows'),
-     Input('datatable', 'selected_row_indices')])
 
-def map_selection(rows, selected_row_indices):
-    aux = pd.DataFrame(rows)
-    temp_df = aux.ix[selected_row_indices, :]
-    if len(selected_row_indices) == 0:
-        return gen_map(aux)
-    return gen_map(temp_df)
 
 
 
