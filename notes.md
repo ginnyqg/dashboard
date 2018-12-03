@@ -9,7 +9,7 @@
 * add changes: git add .
 * commit with comment: git commit -m 'comments'
 * push to server: git push heroku master
-* open app page: Heroku open
+* open app page: heroku open
 * debug: heroku logs --tail
 * https://dash.plot.ly/deployment
 
