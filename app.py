@@ -15,14 +15,15 @@ import os
 import copy
 
 
-app = dash.Dash(__name__)
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 
 mapbox_access_token = "pk.eyJ1IjoiZ2lubnlxZyIsImEiOiJjam9zcnlsemwwZHZrM3JvOTZudm5uY2E3In0.LhMpmoHGbUjWc6wmypE9cg" #fill this field with your Mapbox key
 
 raw = pd.read_csv('https://raw.githubusercontent.com/ginnyqg/dashboard/master/acquisitions.csv')
-
 
 
 # Boostrap CSS.
@@ -105,152 +106,165 @@ def gen_map(raw):
     }
 
 
-
-# Layout
 app.layout = html.Div([
-        # Title - Row
-        html.Div(
-            [
-                html.H4(
-                    'Company Acquisitions by 7 Tech Giants',
-                    style={"font-family": "Arial, sans-serif",
-                           "font-weight": "bold",
-                           'margin-top': '5',
-                           "margin-bottom": "0"},
-                    className='eight columns',
-                ),
-                html.A(html.Button('Code'), href='https://github.com/ginnyqg/dashboard', 
-                    style = {
-                             'float': 'right',
-                             'margin-top': '5'
-                             }
-                             ),
-                # html.P('\u00A0\u00A0\u00A0', 
-                #     style = {'float': 'right',
-                #              'margin-top': '5'}),
-                html.A(html.Button('Data'), href='https://www.kaggle.com/shivamb/company-acquisitions-7-top-companies', 
-                    style = {
-                             'float': 'right',
-                             'margin-top': '5'}),
-                html.H5(
-                    'between 1987 and 2018',
-                    style={'font-family': 'Arial, sans-serif',
-                           "font-size": "120%",
-                           "width": "80%",
-                           "float": "left"
-                           },
-                    className='ten columns',
-                ),
-            ],
-            className='row'
-        ),
 
-        # Selectors
-        html.Div(
-            [
-                html.Div(
-                    [
-                        # html.P('Geo View of Acquired Companies by Parent Companies',
-                        #         style={'font-family': 'Arial, sans-serif',
-                        #                'font-weight': 'bold'}),
-                        dcc.Checklist(
-                                id = 'PComp',
-                                options=[
-                                    {'label': 'Google', 'value': 'Google'},
-                                    {'label': 'Microsoft', 'value': 'Microsoft'},
-                                    {'label': 'Facebook', 'value': 'Facebook'},
-                                    {'label': 'Apple', 'value': 'Apple'},
-                                    {'label': 'Twitter', 'value': 'Twitter'},
-                                    {'label': 'IBM', 'value': 'IBM'},
-                                    {'label': 'Yahoo', 'value': 'Yahoo'}
-                                ],
-                                values=['Google', 'Microsoft', 'Facebook', 'Apple', 'Twitter', 'IBM', 'Yahoo'],
-                                labelStyle={'display': 'inline-block'}
-                        ),
+    dcc.Tabs(id="tabs", children=[
+        dcc.Tab(label='Introduction', children=[
+            html.Div([
+            html.H5('Gammadelt is a small startup that has found its niche in the fast growing and rapidly evolving tech industry by specializing in mobile apps. \
+            	To plan for its future and better position itself in the tech industry, Gammadelt is looking into how the 7 tech giants -- Google, Microsoft, IBM, Apple, Facebook, Twitter, and Yahoo -- have been acquiring companies over the years between 1987 and 2018. ')
+            ])
+        ]),
+
+        dcc.Tab(label='Exploration & Analysis', children=[
+
+            # Title - Row
+            html.Div(
+                [
+                    html.H4(
+                        'Company Acquisitions by 7 Tech Giants',
+                        style={"font-family": "Arial, sans-serif",
+                               "font-weight": "bold",
+                               'margin-top': '5',
+                               "margin-bottom": "0"},
+                        className='eight columns',
+                    ),
+                    html.A(html.Button('Code'), href='https://github.com/ginnyqg/dashboard', 
+                        style = {
+                                 'float': 'right',
+                                 'margin-top': '5'
+                                 }
+                                 ),
+                    # html.P('\u00A0\u00A0\u00A0', 
+                    #     style = {'float': 'right',
+                    #              'margin-top': '5'}),
+                    html.A(html.Button('Data'), href='https://www.kaggle.com/shivamb/company-acquisitions-7-top-companies', 
+                        style = {
+                                 'float': 'right',
+                                 'margin-top': '5'}),
+                    html.H5(
+                        'between 1987 and 2018',
+                        style={'font-family': 'Arial, sans-serif',
+                               "font-size": "120%",
+                               "width": "80%",
+                               "float": "left"
+                               },
+                        className='ten columns',
+                    ),
+                ],
+                className='row'
+            ),
+
+            # Selectors
+            html.Div(
+                [
+                    html.Div(
+                        [
+                            # html.P('Geo View of Acquired Companies by Parent Companies',
+                            #         style={'font-family': 'Arial, sans-serif',
+                            #                'font-weight': 'bold'}),
+                            dcc.Checklist(
+                                    id = 'PComp',
+                                    options=[
+                                        {'label': 'Google', 'value': 'Google'},
+                                        {'label': 'Microsoft', 'value': 'Microsoft'},
+                                        {'label': 'Facebook', 'value': 'Facebook'},
+                                        {'label': 'Apple', 'value': 'Apple'},
+                                        {'label': 'Twitter', 'value': 'Twitter'},
+                                        {'label': 'IBM', 'value': 'IBM'},
+                                        {'label': 'Yahoo', 'value': 'Yahoo'}
+                                    ],
+                                    values=['Google', 'Microsoft', 'Facebook', 'Apple', 'Twitter', 'IBM', 'Yahoo'],
+                                    labelStyle={'display': 'inline-block'}
+                            ),
+                        ],
+                        className='twelve columns',
+                        style={
+                        # 'margin-top': '10',
+                               'margin-bottom': '10'}
+                    ),
+                ],
+                className='row'
+            ),
+
+            # Map, barchart, donut chart, word cloud, text, table
+            html.Div(
+                [
+                    html.Div(
+                        [
+                            dcc.Graph(id='map-graph',
+                                      animate=True, 
+                                      style={'margin-top': '0'}
+                                      )
+                        ], className = "seven columns"
+                    ),
+
+                    html.Div(
+                        [
+                            dcc.Graph(id="bar-chart"
+                                )
+                        ], className="five columns")
                     ],
-                    className='twelve columns',
-                    style={
-                    # 'margin-top': '10',
-                           'margin-bottom': '10'}
-                ),
-            ],
-            className='row'
-        ),
+                    className="row"
+                    ),
 
-        # Map, barchart, donut chart, word cloud, text, table
-        html.Div(
-            [
-                html.Div(
-                    [
-                        dcc.Graph(id='map-graph',
-                                  animate=True, 
-                                  style={'margin-top': '0'}
-                                  )
-                    ], className = "seven columns"
-                ),
+            html.Div(
+                [
+                    html.Div(
+                        [
+                            dcc.Graph(id='donut-chart',
+                                      animate=True, 
+                                      style={'margin-top': '0'}
+                                      )
+                        ], className = "six columns"
+                    ),
 
-                html.Div(
-                    [
-                        dcc.Graph(id="bar-chart"
-                            )
-                    ], className="five columns")
-                ],
-                className="row"
-                ),
-
-        html.Div(
-            [
-                html.Div(
-                    [
-                        dcc.Graph(id='donut-chart',
-                                  animate=True, 
-                                  style={'margin-top': '0'}
-                                  )
-                    ], className = "six columns"
-                ),
-
-                html.Div(
-                    [
-                        dcc.Graph(id="word-cloud"
-                            )
-                    ], className="six columns")
-                ],
-                className="row"
-                ),
+                    html.Div(
+                        [
+                            dcc.Graph(id="word-cloud"
+                                )
+                        ], className="six columns")
+                    ],
+                    className="row"
+                    ),
 
 
-        html.Div(
-            [
-                dt.DataTable(
-                    rows=raw.to_dict('records'),
-                    columns=raw.columns,
-                    row_selectable=True,
-                    filterable=True,
-                    sortable=True,
-                    selected_row_indices=[],
-                    id='datatable'),
-                ],
-                style=layout_right,
-                className="twelve columns"
-                )
-    ]
-    , 
-    className='ten columns offset-by-one')
+            html.Div(
+                [
+                    dt.DataTable(
+                        rows=raw.to_dict('records'),
+                        columns=raw.columns,
+                        row_selectable=True,
+                        filterable=True,
+                        sortable=True,
+                        selected_row_indices=[],
+                        id='datatable'),
+                    ],
+                    style=layout_right,
+                    className="twelve columns"
+                    )
+        # ]
+        # , 
+        # className='ten columns offset-by-one'
+        ]),
 
-
-
-# Callbacks and functions for map-graph
-@app.callback(
-    Output('map-graph', 'figure'),
-    [Input('datatable', 'rows'),
-     Input('datatable', 'selected_row_indices')])
-
-def map_selection(rows, selected_row_indices):
-    aux = pd.DataFrame(rows)
-    temp_df = aux.ix[selected_row_indices, :]
-    if len(selected_row_indices) == 0:
-        return gen_map(aux)
-    return gen_map(temp_df)
+        dcc.Tab(label='Conclusion', children=[
+                html.H5("The exploration and analysis done by Gammadelt found that Google and Microsoft have the most acquisitions, but Microsoft takes the lead over Google in the value of those acquisitions. \
+                While Microsoft's acquired businesses are largely dominated by Software, Google's profile is a lot more diverse. \
+                The majority of Google's acquisitions are in the Software and Mobile industry, but it also places high emphasis on Search, Advertising, Engine, Web, Video, Map, etc. \
+                IBM and Facebook also follow a strategy of acquiring diverse businesses, although Facebook's focus is on applications of social media. \
+                In the end, this information will help Gammadelt evaluate its own business products and strategy, including its current assets, how diverse or focused its lineup, and future development plans, \
+                and compare those to the types of businesses being acquired by the tech giants to forecast who they may be acquired by in the future.")
+                ])
+        ])
+    ],
+    style={
+    'width': '90%',
+    'fontFamily': 'Arial, sans-serif',
+    'margin-left': 'auto',
+    'margin-right': 'auto'
+}
+)
 
 
 # Callbacks and functions for datatable
@@ -465,7 +479,20 @@ def update_figure(rows, selected_row_indices):
 
 
 
+# Callbacks and functions for map-graph
+@app.callback(
+    Output('map-graph', 'figure'),
+    [Input('datatable', 'rows'),
+     Input('datatable', 'selected_row_indices')])
 
+
+
+def map_selection(rows, selected_row_indices):
+    aux = pd.DataFrame(rows)
+    temp_df = aux.ix[selected_row_indices, :]
+    if len(selected_row_indices) == 0:
+        return gen_map(aux)
+    return gen_map(temp_df)
 
 
 
