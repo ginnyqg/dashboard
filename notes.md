@@ -12,6 +12,7 @@
 * open app page: heroku open
 * debug: heroku logs --tail
 * https://dash.plot.ly/deployment
+* https://dashboard.heroku.com/apps
 
 
 
