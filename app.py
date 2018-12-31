@@ -57,54 +57,6 @@ layout_right['height'] = 200
 layout_right['font-size'] = '12'
 
 
-def gen_map(raw):
-    # groupby returns a dictionary mapping the values of the first field
-    # 'classification' onto a list of record dictionaries with that
-    # classification value.
-    csl = [[0, 'rgb(255, 255, 255)'], [0.0005, 'rgb(255, 243, 234)'], [0.001, 'rgb(255, 230, 208)'], [0.01, 'rgb(255, 175, 106)'], [0.05, 'rgb(255, 161, 81)'], [0.25, 'rgb(255, 134, 30)'], [1, 'rgb(255, 118, 0)']]
-
-    return {
-        "data": [{
-        "type": 'choropleth',
-        "locations": raw['Country'],
-        "z": raw['Value (USD)'],
-#         text = raw['Country'],
-        "colorscale": csl,
-        # colorscale = 'Rainbow',
-        "autocolorscale": False,
-        "showscale": False,
-        "marker": {
-        "line": {
-        "color": 'rgb(180,180,180)',
-        "width": 1
-            }},
-#         tick0 = 0,
-        "zmin": 0,
-#         dtick = 1000,
-        # colorbar = dict(
-        #     title = 'US$ B'
-        # )
-        }
-            ],
-        "layout": {
-            "title": '<b>Geo View of Acquired Companies by Parent Company</b>',
-            "width": 550,
-            "height": 350,
-            "margin": {
-            "l": 20,
-            "r": 20,
-            "b": 50,
-            "t": 50},
-            "geo": {
-                "showframe": False,
-                "showcoastlines": True,
-                "projection": {
-                "type": 'equirectangular'
-                }
-            }
-        }
-    }
-
 
 app.layout = html.Div([
 
@@ -555,14 +507,61 @@ def update_figure(rows, selected_row_indices):
 
 
 
+# map-graph
+def gen_map(raw):
+    # groupby returns a dictionary mapping the values of the first field
+    # 'classification' onto a list of record dictionaries with that
+    # classification value.
+    csl = [[0, 'rgb(255, 255, 255)'], [0.0005, 'rgb(255, 243, 234)'], [0.001, 'rgb(255, 230, 208)'], [0.01, 'rgb(255, 175, 106)'], [0.05, 'rgb(255, 161, 81)'], [0.25, 'rgb(255, 134, 30)'], [1, 'rgb(255, 118, 0)']]
+
+    return {
+        "data": [{
+        "type": 'choropleth',
+        "locations": raw['Country'],
+        "z": raw['Value (USD)'],
+#         text = raw['Country'],
+        "colorscale": csl,
+        # colorscale = 'Rainbow',
+        "autocolorscale": False,
+        "showscale": False,
+        "marker": {
+        "line": {
+        "color": 'rgb(180,180,180)',
+        "width": 1
+            }},
+#         tick0 = 0,
+        "zmin": 0,
+#         dtick = 1000,
+        # colorbar = dict(
+        #     title = 'US$ B'
+        # )
+        }
+            ],
+        "layout": {
+            "title": '<b>Geo View of Acquired Companies by Parent Company</b>',
+            "width": 550,
+            "height": 350,
+            "margin": {
+            "l": 20,
+            "r": 20,
+            "b": 50,
+            "t": 50},
+            "geo": {
+                "showframe": False,
+                "showcoastlines": True,
+                "projection": {
+                "type": 'equirectangular'
+                }
+            }
+        }
+    }
+
+
 # Callbacks and functions for map-graph
 @app.callback(
     Output('map-graph', 'figure'),
     [Input('datatable', 'rows'),
      Input('datatable', 'selected_row_indices')])
-
-
-
 def map_selection(rows, selected_row_indices):
     aux = pd.DataFrame(rows)
     temp_df = aux.ix[selected_row_indices, :]
