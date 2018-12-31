@@ -13,6 +13,7 @@ import pandas as pd
 import numpy as np
 import os
 import copy
+import urllib.parse
 
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -196,8 +197,19 @@ app.layout = html.Div([
                         style={"font-family": "Arial, sans-serif",
                                "font-weight": "bold",
                                'margin-top': '5',
-                               "margin-bottom": "0"},
+                               'margin-bottom': '0'},
                         className='eight columns',
+                    ),
+                        html.A(html.Button('Export to csv'),
+                        id='download-link',
+                        download="acquisition_export.csv",
+                        href="",
+                        target="_blank",
+                        style = {
+                        'float': 'right',
+                        'margin-top': '5',
+                        'margin-bottom': '0'
+                        }
                     ),
                     html.H5(
                         'between 1987 and 2018',
@@ -305,23 +317,33 @@ def update_selected_row_indices(PComp):
 
     # PCompany filter
     map_aux = map_aux[map_aux['ParentCompany'].isin(PComp)]
-
     rows = map_aux.to_dict('records')
     return rows
 
 
-
+#update datatable based on multi-select result, selected_row_indices
 @app.callback(
     Output('datatable', 'selected_row_indices'),
     [Input('bar-chart', 'selectedData')],
     [State('datatable', 'selected_row_indices')])
-
 def update_selected_row_indices(selectedData, selected_row_indices):
     if selectedData:
         selected_row_indices = []
         for point in selectedData['points']:
             selected_row_indices.append(point['pointNumber'])
     return selected_row_indices
+
+
+#export csv for datatable based on selection
+@app.callback(
+    Output('download-link', 'href'),
+    [dash.dependencies.Input('datatable', 'rows')],
+    [State('datatable', 'selected_row_indices')])
+def update_download_link(rows, selected_row_indices):
+    dff = pd.DataFrame(rows)
+    csv_string = dff.to_csv(index=False, encoding='utf-8')
+    csv_string = "data:text/csv;charset=utf-8, %EF%BB%BF" + urllib.parse.quote(csv_string)
+    return csv_string
 
 
 
