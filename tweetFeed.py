@@ -15,10 +15,10 @@ def create_table():
 create_table()
 
 
-ckey = 'tTVzDuIq4E8eeyzTOiyGl13ot'
-csecret = 'QSBDZyzYHcZvxsyJG4sREX2TekCcvwTHmdTLPmdlofLnrVMORL'
-atoken = '351859770-mhjmvAs4l3s027lUuGVxt6bewqjiRDYgS8To9AIx'
-asecret = 'tZdYT9WUhz6sinVdTJZ8hUmgOQKRAunnIiR4NRSZxYxj4'
+ckey = ''
+csecret = ''
+atoken = ''
+asecret = ''
 
 class listener(StreamListener):
 
