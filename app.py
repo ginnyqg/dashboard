@@ -15,6 +15,13 @@ import os
 import copy
 import urllib.parse
 
+from tweepy import Stream
+from tweepy import OAuthHandler
+from tweepy.streaming import StreamListener
+import json
+import sqlite3
+from unidecode import unidecode
+
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -58,6 +65,56 @@ layout_right['height'] = 200
 layout_right['font-size'] = '12'
 
 
+conn = sqlite3.connect('twitter.db')
+c = conn.cursor()
+
+
+# def create_table():
+#     c.execute("CREATE TABLE IF NOT EXISTS CAtweets(unix REAL, tweet TEXT)")
+#     conn.commit()
+# create_table()
+
+
+# ckey = 'tTVzDuIq4E8eeyzTOiyGl13ot'
+# csecret = 'QSBDZyzYHcZvxsyJG4sREX2TekCcvwTHmdTLPmdlofLnrVMORL'
+# atoken = '351859770-mhjmvAs4l3s027lUuGVxt6bewqjiRDYgS8To9AIx'
+# asecret = 'tZdYT9WUhz6sinVdTJZ8hUmgOQKRAunnIiR4NRSZxYxj4'
+
+# class listener(StreamListener):
+
+#     def on_data(self, data):
+#         try:
+#             data = json.loads(data)
+#             tweet = unidecode(data['text'])
+#             time_ms = data['timestamp_ms']
+#             # print(time_ms, tweet)
+#             c.execute("INSERT INTO CAtweets (unix, tweet) VALUES (?, ?)", (time_ms, tweet))
+#             conn.commit()
+
+#         except KeyError as e:
+#             # print(str(e))
+#             pass
+
+#         return True
+
+
+#     def on_error(self, status):
+#         # print(status)
+#         pass
+
+
+# auth = OAuthHandler(ckey, csecret)
+# auth.set_access_token(atoken, asecret)
+# twitterStream = Stream(auth, listener())
+# twitterStream.filter(track = ['#techacquisition', '#tech', '#technology', '#merger'])
+
+
+
+df = pd.read_sql("SELECT * FROM CAtweets ORDER BY unix DESC LIMIT 7", conn)
+df['date'] = pd.to_datetime(df['unix'], unit='ms')
+df = df.drop(['unix'], axis=1)
+df = df[['date','tweet']]
+
 
 app.layout = html.Div([
 
@@ -66,11 +123,41 @@ app.layout = html.Div([
 
         dcc.Tab(label='Introduction', 
             children=[
-            html.Div([
-            html.H6('Gammadelt is a small startup that has found its niche in the fast growing and rapidly evolving tech industry by specializing in mobile apps. \
-            	To plan for its future and better position itself in the tech industry, Gammadelt is looking into how the 7 tech giants -- Google, Microsoft, IBM, Apple, Facebook, Twitter, and Yahoo -- have been acquiring companies over the years between 1987 and 2018. ')
-            ], style = {'font-family': 'Georgia', 'margin-top': '150', 'margin-bottom': '150'})
-        ]),
+            html.Div(
+            [
+            html.H6("Gammadelt is a small startup that has found its niche in the fast growing and rapidly evolving tech industry by specializing in mobile apps. \
+            	To plan for its future and better position itself in the tech industry, Gammadelt is looking into how the 7 tech giants -- Google, Microsoft, IBM, Apple, \
+                Facebook, Twitter, and Yahoo -- have been acquiring companies over the years between 1987 and 2018.",
+            style = {'font-family': 'Georgia', 'margin-top': '30', 'margin-bottom': '30'},
+            className='row',
+            ),
+
+            html.Div(
+                html.Table(className="responsive-table",
+                      children=[
+                          html.Thead(
+                              html.Tr(
+                                  children=[
+                                      html.Th(col.title()) for col in df.columns.values],
+                                  style={'color':'white', 'background-color': '#80bced', 'font-size': '110%'}
+                                  )
+                              ),
+                          html.Tbody(
+                              [
+                                  
+                              html.Tr(
+                                  children=[
+                                      html.Td(data) for data in d
+                                      ], style={'color':'white', 'background-color': '#80bced', 'font-size': '80%'}
+                                  )
+                               for d in df.values.tolist()])
+                          ]
+                ),
+                style = {"width": '95%',
+                'margin-left': 'auto',
+                'margin-right': 'auto'}
+                ),
+            ])]),
 
         dcc.Tab(label='Exploration & Analysis', 
             children=[
@@ -279,22 +366,23 @@ app.layout = html.Div([
             children=[
             html.Div(
             [   
-            html.H6("Analysis done by Gammadelt found that", style = {'font-family': 'Georgia', 'font-style': 'normal', 'color': 'black', 'margin-bottom': '20'}),    
+            html.H6("Analysis done by Gammadelt found that", style = {'font-family': 'Georgia', 'font-style': 'normal', 'color': 'black', 'background-color': 'white', 'margin-bottom': '30'}),    
             html.P("1. Google and Microsoft have the most acquisitions, but Microsoft takes the lead in the value of those acquisitions."),
             html.P("2. While Microsoft's acquired businesses are largely dominated by Software, Google's profile is a lot more diverse."),
             html.P("3. Majority of Google's acquisitions are in the Software and Mobile industry, but it also places high emphasis on Search, Advertising, Engine, Web, Video, Map, etc."),
             html.P("4. IBM and Facebook also follow a strategy of acquiring diverse businesses, although Facebook's focus is on applications of social media."),
             html.H6("In the end, this information will help Gammadelt evaluate its own business products and strategy, including its current assets, \
                 how diverse or focused its lineup, and future development plans, and compare those to the types of businesses being acquired by the \
-                tech giants to forecast who they may be acquired by in the future.", style = {'font-family': 'Georgia', 'font-style': 'normal', 'color': 'black', 'margin-top': '20'})
+                tech giants to forecast who they may be acquired by in the future.", 
+                style = {'font-family': 'Georgia', 'font-style': 'normal', 'color': 'black', 'background-color': 'white', 'margin-top': '30'})
             ],
             style = {
-                        'font-family': 'Times',
-                        'font-size': "130%",
+                        'font-family': 'Georgia',
                         'font-style': 'italic',
-                        'color': '#0059b3',
-                        'margin-top': '100',
-                        'margin-bottom': '100'})
+                        'color': 'white',
+                        'background-color': '#8397e9',
+                        'margin-top': '80',
+                        'margin-bottom': '80'})
         ])
         ])
     ],
@@ -590,7 +678,6 @@ def map_selection(rows, selected_row_indices):
     if len(selected_row_indices) == 0:
         return gen_map(aux)
     return gen_map(temp_df)
-
 
 
 if __name__ == '__main__':
