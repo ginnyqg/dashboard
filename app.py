@@ -2,6 +2,7 @@ import dash
 from dash.dependencies import Input, Output, State, Event
 import dash_core_components as dcc
 import dash_html_components as html
+import grasia_dash_components as gdc
 import dash_table_experiments as dt
 import plotly
 from plotly import graph_objs as go
@@ -23,14 +24,14 @@ import sqlite3
 from unidecode import unidecode
 
 
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 
-#fill this field with your Mapbox key
-mapbox_access_token = ""
+mapbox_access_token = "pk.eyJ1IjoiZ2lubnlxZyIsImEiOiJjam9zcnlsemwwZHZrM3JvOTZudm5uY2E3In0.LhMpmoHGbUjWc6wmypE9cg" #fill this field with your Mapbox key
 
 raw = pd.read_csv('https://raw.githubusercontent.com/ginnyqg/dashboard/master/acquisitions.csv')
 
@@ -76,10 +77,10 @@ c = conn.cursor()
 # create_table()
 
 
-# ckey = ''
-# csecret = ''
-# atoken = ''
-# asecret = ''
+# ckey = 'tTVzDuIq4E8eeyzTOiyGl13ot'
+# csecret = 'QSBDZyzYHcZvxsyJG4sREX2TekCcvwTHmdTLPmdlofLnrVMORL'
+# atoken = '351859770-mhjmvAs4l3s027lUuGVxt6bewqjiRDYgS8To9AIx'
+# asecret = 'tZdYT9WUhz6sinVdTJZ8hUmgOQKRAunnIiR4NRSZxYxj4'
 
 # class listener(StreamListener):
 
@@ -133,31 +134,38 @@ app.layout = html.Div([
             className='row',
             ),
 
-            html.Div(
-                html.Table(className="responsive-table",
-                      children=[
-                          html.Thead(
-                              html.Tr(
-                                  children=[
-                                      html.Th(col.title()) for col in df.columns.values],
-                                  style={'color':'white', 'background-color': '#80bced', 'font-size': '110%'}
-                                  )
-                              ),
-                          html.Tbody(
-                              [
+            html.Div([
+                # html.Table(className="responsive-table",
+                #       children=[
+                #           html.Thead(
+                #               html.Tr(
+                #                   children=[
+                #                       html.Th(col.title()) for col in df.columns.values],
+                #                   style={'color':'white', 'background-color': '#80bced', 'font-size': '110%'}
+                #                   )
+                #               ),
+                #           html.Tbody(
+                #               [
                                   
-                              html.Tr(
-                                  children=[
-                                      html.Td(data) for data in d
-                                      ], style={'color':'white', 'background-color': '#80bced', 'font-size': '80%'}
-                                  )
-                               for d in df.values.tolist()])
-                          ]
+                #               html.Tr(
+                #                   children=[
+                #                       html.Td(data) for data in d
+                #                       ], style={'color':'white', 'background-color': '#80bced', 'font-size': '80%'}
+                #                   )
+                #                for d in df.values.tolist()])
+                #           ]
+                # ),
+                # style = {"width": '95%',
+                # 'margin-left': 'auto',
+                # 'margin-right': 'auto'}
+                html.A('Tweets by TechCompanyNews', className="twitter-timeline", href="https://twitter.com/TechCompanyNews?ref_src=twsrc%5Etfw",
+                    style = {
+                    "data-height": "50%",
+                    "data-width": "90%",
+                    }
                 ),
-                style = {"width": '95%',
-                'margin-left': 'auto',
-                'margin-right': 'auto'}
-                ),
+                gdc.Import(src="https://platform.twitter.com/widgets.js")
+                ])
             ])]),
 
         dcc.Tab(label='Exploration & Analysis', 
@@ -288,17 +296,6 @@ app.layout = html.Div([
                                'margin-bottom': '0'},
                         className='eight columns',
                     ),
-                        html.A(html.Button('Export to csv'),
-                        id='download-link',
-                        download="acquisition_export.csv",
-                        href="",
-                        target="_blank",
-                        style = {
-                        'float': 'right',
-                        'margin-top': '5',
-                        'margin-bottom': '0'
-                        }
-                    ),
                     html.H5(
                         'between 1987 and 2018',
                         style={'font-family': 'Arial, sans-serif',
@@ -307,6 +304,16 @@ app.layout = html.Div([
                                "float": "left"
                                },
                         className='ten columns',
+                    ),
+                    html.A(html.Button('Export to csv'),
+                        id='download-link',
+                        download="acquisition_export.csv",
+                        href="",
+                        target="_blank",
+                        style = {
+                        'margin-top': '-10',
+                        'float': 'right'
+                        }
                     ),
                 ],
                 className='row'
@@ -356,7 +363,7 @@ app.layout = html.Div([
                     style={
                         'font-family': 'Arial, sans-serif',
                         'font-size': "90%",
-                        'margin-top': '20',
+                        'margin-top': '10',
                         'margin-bottom': '10'},
                     className="twelve columns"
                     )
@@ -679,6 +686,7 @@ def map_selection(rows, selected_row_indices):
     if len(selected_row_indices) == 0:
         return gen_map(aux)
     return gen_map(temp_df)
+
 
 
 if __name__ == '__main__':
