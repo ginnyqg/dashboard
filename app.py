@@ -234,10 +234,46 @@ app.layout = html.Div([
                                     labelStyle={'display': 'inline-block'}
                             ),
                         ],
+                        className = "seven columns",
+                            ),
+
+                    html.Div(id='output-container-range-slider', 
+                        style={'float': 'right'},
+                        # className = "three columns"
+                        ),
+                ],
+                className='row'
+            ),
+
+            # Slider
+            html.Div(
+                [
+                    html.Div(
+                        [
+                            dcc.RangeSlider(
+                                    id = 'yrSlider',
+                                    min=1987,
+                                    max=2018,
+                                    step=1,
+                                    value=[1987, 2018],
+                                    marks={
+                                    1987: {'label': '1987'},
+                                    1990: {'label': '1990'},
+                                    1995: {'label': '1995'},
+                                    2000: {'label': '2000'},
+                                    2005: {'label': '2005'},
+                                    2010: {'label': '2010'},
+                                    2015: {'label': '2015'},
+                                    2018: {'label': '2018'}
+                                    },
+                                    updatemode='drag',
+                                    pushable=1
+                            )
+                        ],
                         className='twelve columns',
                         style={
-                        # 'margin-top': '10',
-                               'margin-bottom': '10'}
+                        'margin-top': '10',
+                        'margin-bottom': '30'}
                     ),
                 ],
                 className='row'
@@ -299,22 +335,22 @@ app.layout = html.Div([
                                'margin-bottom': '0'},
                         className='eight columns',
                     ),
-                    html.H5(
-                        'between 1987 and 2018',
-                        style={'font-family': 'Arial, sans-serif',
-                               "font-size": "120%",
-                               "width": "80%",
-                               "float": "left"
-                               },
-                        className='ten columns',
-                    ),
+                    # html.H5(
+                    #     'between 1987 and 2018',
+                    #     style={'font-family': 'Arial, sans-serif',
+                    #            "font-size": "120%",
+                    #            "width": "80%",
+                    #            "float": "left"
+                    #            },
+                    #     className='ten columns',
+                    # ),
                     html.A(html.Button('Export to csv'),
                         id='download-link',
                         download="acquisition_export.csv",
                         href="",
                         target="_blank",
                         style = {
-                        'margin-top': '-10',
+                        'margin-top': '20',
                         'float': 'right'
                         }
                     ),
@@ -406,18 +442,27 @@ app.layout = html.Div([
 )
 
 
-# Callbacks and functions for datatable
+# Callbacks and functions for selected data based on filters (underlying datatable)
 @app.callback(
     Output('datatable', 'rows'),
-    [dash.dependencies.Input('PComp', 'values')
+    [dash.dependencies.Input('PComp', 'values'),
+     dash.dependencies.Input('yrSlider', 'value')
     ])
-def update_selected_row_indices(PComp):
+def update_selected_row_indices(PComp, yrSlider):
     map_aux = raw.copy()
 
     # PCompany filter
-    map_aux = map_aux[map_aux['ParentCompany'].isin(PComp)]
+    map_aux = map_aux[(map_aux['ParentCompany'].isin(PComp)) & (map_aux['AcquisitionYear'] >= yrSlider[0]) & (map_aux['AcquisitionYear'] <= yrSlider[1])]
     rows = map_aux.to_dict('records')
     return rows
+
+
+# Show slider selection results
+@app.callback(
+    dash.dependencies.Output('output-container-range-slider', 'children'),
+    [dash.dependencies.Input('yrSlider', 'value')])
+def update_output(value):
+    return 'You have selected years between {} and {}'.format(value[0], value[1])
 
 
 #update datatable based on multi-select result, selected_row_indices
