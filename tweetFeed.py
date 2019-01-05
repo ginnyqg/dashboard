@@ -15,10 +15,13 @@ def create_table():
 create_table()
 
 
-ckey = ''
-csecret = ''
-atoken = ''
-asecret = ''
+keys_file = open("keys.txt")
+lines = keys_file.readlines()
+ckey = lines[1].rstrip()
+csecret = lines[2].rstrip()
+atoken = lines[3].rstrip()
+asecret = lines[4].rstrip()
+
 
 class listener(StreamListener):
 

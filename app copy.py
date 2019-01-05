@@ -2,6 +2,7 @@ import dash
 from dash.dependencies import Input, Output, State, Event
 import dash_core_components as dcc
 import dash_html_components as html
+import grasia_dash_components as gdc
 import dash_table_experiments as dt
 import plotly
 from plotly import graph_objs as go
@@ -23,13 +24,17 @@ import sqlite3
 from unidecode import unidecode
 
 
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 
-mapbox_access_token = "" #fill this field with your Mapbox key
+keys_file = open("keys.txt")
+lines = keys_file.readlines()
+mapbox_access_token = lines[0].rstrip()
+
 
 raw = pd.read_csv('https://raw.githubusercontent.com/ginnyqg/dashboard/master/acquisitions.csv')
 
@@ -75,10 +80,11 @@ c = conn.cursor()
 # create_table()
 
 
-# ckey = ''
-# csecret = ''
-# atoken = ''
-# asecret = ''
+# ckey = lines[1].rstrip()
+# csecret = lines[2].rstrip()
+# atoken = lines[3].rstrip()
+# asecret = lines[4].rstrip()
+
 
 # class listener(StreamListener):
 
@@ -126,37 +132,44 @@ app.layout = html.Div([
             html.Div(
             [
             html.H6("Gammadelt is a small startup that has found its niche in the fast growing and rapidly evolving tech industry by specializing in mobile apps. \
-            	To plan for its future and better position itself in the tech industry, Gammadelt is looking into how the 7 tech giants -- Google, Microsoft, IBM, Apple, \
+                To plan for its future and better position itself in the tech industry, Gammadelt is looking into how the 7 tech giants -- Google, Microsoft, IBM, Apple, \
                 Facebook, Twitter, and Yahoo -- have been acquiring companies over the years between 1987 and 2018.",
             style = {'font-family': 'Georgia', 'margin-top': '30', 'margin-bottom': '30'},
             className='row',
             ),
 
-            html.Div(
-                html.Table(className="responsive-table",
-                      children=[
-                          html.Thead(
-                              html.Tr(
-                                  children=[
-                                      html.Th(col.title()) for col in df.columns.values],
-                                  style={'color':'white', 'background-color': '#80bced', 'font-size': '110%'}
-                                  )
-                              ),
-                          html.Tbody(
-                              [
+            html.Div([
+                # html.Table(className="responsive-table",
+                #       children=[
+                #           html.Thead(
+                #               html.Tr(
+                #                   children=[
+                #                       html.Th(col.title()) for col in df.columns.values],
+                #                   style={'color':'white', 'background-color': '#80bced', 'font-size': '110%'}
+                #                   )
+                #               ),
+                #           html.Tbody(
+                #               [
                                   
-                              html.Tr(
-                                  children=[
-                                      html.Td(data) for data in d
-                                      ], style={'color':'white', 'background-color': '#80bced', 'font-size': '80%'}
-                                  )
-                               for d in df.values.tolist()])
-                          ]
+                #               html.Tr(
+                #                   children=[
+                #                       html.Td(data) for data in d
+                #                       ], style={'color':'white', 'background-color': '#80bced', 'font-size': '80%'}
+                #                   )
+                #                for d in df.values.tolist()])
+                #           ]
+                # ),
+                # style = {"width": '95%',
+                # 'margin-left': 'auto',
+                # 'margin-right': 'auto'}
+                html.A('Tweets by TechCompanyNews', className="twitter-timeline", href="https://twitter.com/TechCompanyNews?ref_src=twsrc%5Etfw",
+                    style = {
+                    "data-height": "50%",
+                    "data-width": "90%",
+                    }
                 ),
-                style = {"width": '95%',
-                'margin-left': 'auto',
-                'margin-right': 'auto'}
-                ),
+                gdc.Import(src="https://platform.twitter.com/widgets.js")
+                ])
             ])]),
 
         dcc.Tab(label='Exploration & Analysis', 
@@ -679,10 +692,10 @@ def map_selection(rows, selected_row_indices):
     return gen_map(temp_df)
 
 
+
 if __name__ == '__main__':
     app.run_server(debug=True)
 
 
 
-
-
+    

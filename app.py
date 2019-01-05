@@ -31,7 +31,10 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 
-mapbox_access_token = "" #fill this field with your Mapbox key
+keys_file = open("keys.txt")
+lines = keys_file.readlines()
+mapbox_access_token = lines[0].rstrip()
+
 
 raw = pd.read_csv('https://raw.githubusercontent.com/ginnyqg/dashboard/master/acquisitions.csv')
 
@@ -77,10 +80,10 @@ c = conn.cursor()
 # create_table()
 
 
-# ckey = ''
-# csecret = ''
-# atoken = ''
-# asecret = ''
+# ckey = lines[1].rstrip()
+# csecret = lines[2].rstrip()
+# atoken = lines[3].rstrip()
+# asecret = lines[4].rstrip()
 
 # class listener(StreamListener):
 
@@ -128,7 +131,7 @@ app.layout = html.Div([
             html.Div(
             [
             html.H6("Gammadelt is a small startup that has found its niche in the fast growing and rapidly evolving tech industry by specializing in mobile apps. \
-            	To plan for its future and better position itself in the tech industry, Gammadelt is looking into how the 7 tech giants -- Google, Microsoft, IBM, Apple, \
+                To plan for its future and better position itself in the tech industry, Gammadelt is looking into how the 7 tech giants -- Google, Microsoft, IBM, Apple, \
                 Facebook, Twitter, and Yahoo -- have been acquiring companies over the years between 1987 and 2018.",
             style = {'font-family': 'Georgia', 'margin-top': '30', 'margin-bottom': '30'},
             className='row',
@@ -694,5 +697,4 @@ if __name__ == '__main__':
 
 
 
-
-
+    
