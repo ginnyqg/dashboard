@@ -18,7 +18,7 @@ app = dash.Dash(__name__)
 server = app.server
 
 
-mapbox_access_token = "pk.eyJ1IjoiZ2lubnlxZyIsImEiOiJjam9zcnlsemwwZHZrM3JvOTZudm5uY2E3In0.LhMpmoHGbUjWc6wmypE9cg" #fill this field with your Mapbox key
+mapbox_access_token = "" #fill this field with your Mapbox key
 
 raw = pd.read_csv('https://raw.githubusercontent.com/ginnyqg/dashboard/master/acquisitions.csv')
 
