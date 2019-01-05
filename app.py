@@ -133,7 +133,7 @@ app.layout = html.Div([
             html.H6("Gammadelt is a small startup that has found its niche in the fast growing and rapidly evolving tech industry by specializing in mobile apps. \
                 To plan for its future and better position itself in the tech industry, Gammadelt is looking into how the 7 tech giants -- Google, Microsoft, IBM, Apple, \
                 Facebook, Twitter, and Yahoo -- have been acquiring companies over the years between 1987 and 2018.",
-            style = {'font-family': 'Georgia', 'margin-top': '30', 'margin-bottom': '30'},
+            style = {'font-family': 'Georgia', 'margin-top': '30', 'margin-bottom': '0'},
             className='row',
             ),
 
@@ -203,7 +203,8 @@ app.layout = html.Div([
                         style={'font-family': 'Arial, sans-serif',
                                "font-size": "120%",
                                "width": "80%",
-                               "float": "left"
+                               "float": "left",
+                               'margin-bottom': '20'
                                },
                         className='ten columns',
                     ),
@@ -272,8 +273,8 @@ app.layout = html.Div([
                         ],
                         className='twelve columns',
                         style={
-                        'margin-top': '10',
-                        'margin-bottom': '30'}
+                        'margin-top': '30',
+                        'margin-bottom': '50'}
                     ),
                 ],
                 className='row'
@@ -351,6 +352,7 @@ app.layout = html.Div([
                         target="_blank",
                         style = {
                         'margin-top': '20',
+                        'margin-bottom': '10',
                         'float': 'right'
                         }
                     ),
