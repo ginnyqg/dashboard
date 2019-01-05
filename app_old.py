@@ -18,7 +18,11 @@ app = dash.Dash(__name__)
 server = app.server
 
 
-mapbox_access_token = "" #fill this field with your Mapbox key
+# Get unique MapBox key
+keys_file = open("keys.txt")
+lines = keys_file.readlines()
+mapbox_access_token = lines[0].rstrip()
+
 
 raw = pd.read_csv('https://raw.githubusercontent.com/ginnyqg/dashboard/master/acquisitions.csv')
 
