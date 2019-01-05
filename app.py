@@ -31,7 +31,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 
-mapbox_access_token = "pk.eyJ1IjoiZ2lubnlxZyIsImEiOiJjam9zcnlsemwwZHZrM3JvOTZudm5uY2E3In0.LhMpmoHGbUjWc6wmypE9cg" #fill this field with your Mapbox key
+mapbox_access_token = "" #fill this field with your Mapbox key
 
 raw = pd.read_csv('https://raw.githubusercontent.com/ginnyqg/dashboard/master/acquisitions.csv')
 
@@ -77,10 +77,10 @@ c = conn.cursor()
 # create_table()
 
 
-# ckey = 'tTVzDuIq4E8eeyzTOiyGl13ot'
-# csecret = 'QSBDZyzYHcZvxsyJG4sREX2TekCcvwTHmdTLPmdlofLnrVMORL'
-# atoken = '351859770-mhjmvAs4l3s027lUuGVxt6bewqjiRDYgS8To9AIx'
-# asecret = 'tZdYT9WUhz6sinVdTJZ8hUmgOQKRAunnIiR4NRSZxYxj4'
+# ckey = ''
+# csecret = ''
+# atoken = ''
+# asecret = ''
 
 # class listener(StreamListener):
 
