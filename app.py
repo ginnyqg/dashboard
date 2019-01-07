@@ -181,14 +181,14 @@ app.layout = html.Div([
                         'Company Acquisitions by 7 Tech Giants',
                         style={"font-family": "Arial, sans-serif",
                                "font-weight": "bold",
-                               'margin-top': '5',
+                               'margin-top': '30',
                                "margin-bottom": "0"},
                         className='eight columns',
                     ),
                     html.A(html.Button('Code'), href='https://github.com/ginnyqg/dashboard', 
                         style = {
                                  'float': 'right',
-                                 'margin-top': '5'
+                                 'margin-top': '30'
                                  }
                                  ),
                     # html.P('\u00A0\u00A0\u00A0', 
@@ -197,7 +197,7 @@ app.layout = html.Div([
                     html.A(html.Button('Data'), href='https://www.kaggle.com/shivamb/company-acquisitions-7-top-companies', 
                         style = {
                                  'float': 'right',
-                                 'margin-top': '5'}),
+                                 'margin-top': '30'}),
                     html.H5(
                         'between 1987 and 2018',
                         style={'font-family': 'Arial, sans-serif',
@@ -280,6 +280,79 @@ app.layout = html.Div([
                 className='row'
             ),
 
+            # # Dropdowns summary
+            # html.Div(id='output-container-dropdown', 
+            #     # className = "three columns"
+            #     ),
+
+            # Dropdown
+            html.Div(
+                [
+                    html.Div(
+                        [
+                            dcc.Dropdown(
+                                    id = 'ctyDropdown',
+                                    options=[
+                                        {'label': 'United States', 'value': 'USA'},
+                                        {'label': 'Germany', 'value': 'GER'},
+                                        {'label': 'Finland', 'value': 'FIN'},
+                                        {'label': 'Canada', 'value': 'CAN'},
+                                        {'label': 'United Kingdom', 'value': 'UK'},
+                                        {'label': 'Sweden', 'value': 'SWE'},
+                                        {'label': 'Israel', 'value': 'ISR'},
+                                        {'label': 'Taiwan', 'value': 'TWN'},
+                                        {'label': 'Australia', 'value': 'AUS'},
+                                        {'label': 'Singapore', 'value': 'SGP'},
+                                        {'label': 'Norway', 'value': 'NOR'},
+                                        {'label': 'Denmark', 'value': 'DEN'},
+                                        {'label': 'Romania', 'value': 'ROU'},
+                                        {'label': 'China', 'value': 'CHN'},
+                                        {'label': 'EU', 'value': 'EU'},
+                                        {'label': 'India', 'value': 'IND'},
+                                        {'label': 'Belarus', 'value': 'BLR'},
+                                        {'label': 'France', 'value': 'FRA'},
+                                        {'label': 'Brazil', 'value': 'BRA'},
+                                        {'label': 'Italy', 'value': 'ITA'},
+                                        {'label': 'Switzerland', 'value': 'SWI'},
+                                        {'label': 'Switzerland', 'value': 'SUI'},
+                                        {'label': 'Switzerland', 'value': 'CHE'},
+                                        {'label': 'Netherlands', 'value': 'NED'},
+                                        {'label': 'Spain', 'value': 'ESP'},
+                                        {'label': 'Thailand', 'value': 'THA'},
+                                        {'label': 'Belgium', 'value': 'BEL'},
+                                        {'label': 'Portugal', 'value': 'POR'},
+                                        {'label': 'N/A', 'value': 'nan'},
+                                        {'label': 'South Korea', 'value': 'KOR'},
+                                        {'label': 'Hong Kong', 'value': 'HKG'},
+                                        {'label': 'Jordan', 'value': 'JOR'},
+                                        {'label': 'Malaysia', 'value': 'MYS'},
+                                        {'label': 'Ireland', 'value': 'IRL'},
+                                        {'label': 'Indonesia', 'value': 'IDN'},
+                                        {'label': 'Greece', 'value': 'GRE'},
+                                        {'label': 'Luxembourg', 'value': 'LUX'},
+                                        {'label': 'Ukraine', 'value': 'UKR'},
+                                        {'label': 'Austria', 'value': 'AUT'},
+                                        {'label': 'Japan', 'value': 'JPN'},
+                                        {'label': 'New Zealand', 'value': 'NZL'}
+                                    ],
+                            value=['USA', 'FIN', 'CAN', 'SWE', 'ISR', 'AUS',
+                                    'NOR', 'CHN', 'IND', 'FRA',
+                                    'BRA', 'ITA', 'ESP', 'THA',
+                                    'KOR', 'MYS', 'IDN',
+                                    'UKR', 'AUT', 'JPN', 'NZL'],
+                            multi=True,
+                            placeholder="Select countries"
+                            ),
+                        ],
+                    className='twelve columns',
+                    style={
+                    # 'margin-top': '10',
+                    'margin-bottom': '50'}
+                    ),
+                ],
+                className='row'
+            ),
+
             # Map, barchart, donut chart, word cloud, text
             html.Div(
                 [
@@ -332,26 +405,17 @@ app.layout = html.Div([
                         'Company Acquisitions by 7 Tech Giants',
                         style={"font-family": "Arial, sans-serif",
                                "font-weight": "bold",
-                               'margin-top': '5',
+                               'margin-top': '30',
                                'margin-bottom': '0'},
                         className='eight columns',
                     ),
-                    # html.H5(
-                    #     'between 1987 and 2018',
-                    #     style={'font-family': 'Arial, sans-serif',
-                    #            "font-size": "120%",
-                    #            "width": "80%",
-                    #            "float": "left"
-                    #            },
-                    #     className='ten columns',
-                    # ),
                     html.A(html.Button('Export to csv'),
                         id='download-link',
                         download="acquisition_export.csv",
                         href="",
                         target="_blank",
                         style = {
-                        'margin-top': '20',
+                        'margin-top': '30',
                         'margin-bottom': '10',
                         'float': 'right'
                         }
@@ -415,7 +479,7 @@ app.layout = html.Div([
             children=[
             html.Div(
             [   
-            html.H6("Analysis done by Gammadelt found that", style = {'font-family': 'Georgia', 'font-style': 'normal', 'color': 'black', 'background-color': 'white', 'margin-bottom': '30'}),    
+            html.H6("Analysis done by Gammadelt found that at global level", style = {'font-family': 'Georgia', 'font-style': 'normal', 'color': 'black', 'background-color': 'white', 'margin-bottom': '30'}),    
             html.P("1. Google and Microsoft have the most acquisitions, but Microsoft takes the lead in the value of those acquisitions."),
             html.P("2. While Microsoft's acquired businesses are largely dominated by Software, Google's profile is a lot more diverse."),
             html.P("3. Majority of Google's acquisitions are in the Software and Mobile industry, but it also places high emphasis on Search, Advertising, Engine, Web, Video, Map, etc."),
@@ -430,8 +494,9 @@ app.layout = html.Div([
                         'font-style': 'italic',
                         'color': 'white',
                         'background-color': '#8397e9',
-                        'margin-top': '80',
-                        'margin-bottom': '80'})
+                        'margin-top': '30',
+                        # 'margin-bottom': '80'
+                        })
         ])
         ])
     ],
@@ -448,13 +513,16 @@ app.layout = html.Div([
 @app.callback(
     Output('datatable', 'rows'),
     [dash.dependencies.Input('PComp', 'values'),
-     dash.dependencies.Input('yrSlider', 'value')
+     dash.dependencies.Input('yrSlider', 'value'),
+     dash.dependencies.Input('ctyDropdown', 'value')
     ])
-def update_selected_row_indices(PComp, yrSlider):
+def update_selected_row_indices(PComp, yrSlider, ctyDropdown):
     map_aux = raw.copy()
 
     # PCompany filter
-    map_aux = map_aux[(map_aux['ParentCompany'].isin(PComp)) & (map_aux['AcquisitionYear'] >= yrSlider[0]) & (map_aux['AcquisitionYear'] <= yrSlider[1])]
+    map_aux = map_aux[(map_aux['ParentCompany'].isin(PComp)) & 
+    (map_aux['AcquisitionYear'] >= yrSlider[0]) & (map_aux['AcquisitionYear'] <= yrSlider[1]) &
+    (map_aux['Country'].isin(ctyDropdown))]
     rows = map_aux.to_dict('records')
     return rows
 
@@ -465,6 +533,14 @@ def update_selected_row_indices(PComp, yrSlider):
     [dash.dependencies.Input('yrSlider', 'value')])
 def update_output(value):
     return 'You have selected years between {} and {}'.format(value[0], value[1])
+
+
+# # Show dropdown selection results
+# @app.callback(
+#     dash.dependencies.Output('output-container-dropdown', 'children'),
+#     [dash.dependencies.Input('ctyDropdown', 'value')])
+# def update_output(value):
+#     return 'You have selected these countries: "{}"'.format(value)
 
 
 #update datatable based on multi-select result, selected_row_indices
